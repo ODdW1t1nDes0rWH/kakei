@@ -12,7 +12,6 @@
 <style>
 :root {
   --bg: #F7F4EF;
-  --surface: #FFFFFF;
   --border: #E5DED4;
   --text: #1A1A1A;
   --muted: #8A8278;
@@ -27,10 +26,8 @@
 * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
 body {
   font-family: 'Shippori Mincho', serif;
-  background: var(--bg);
-  color: var(--text);
-  min-height: 100vh;
-  min-height: -webkit-fill-available;
+  background: var(--bg); color: var(--text);
+  min-height: 100vh; min-height: -webkit-fill-available;
   overscroll-behavior: none;
 }
 .header {
@@ -50,8 +47,7 @@ body {
 }
 .year-label { font-family: 'DM Mono', monospace; font-size: 17px; min-width: 50px; text-align: center; }
 .tabbar {
-  display: flex; background: #EEEAE3;
-  border-bottom: 1px solid var(--border);
+  display: flex; background: #EEEAE3; border-bottom: 1px solid var(--border);
   position: sticky; top: calc(64px + var(--safe-top)); z-index: 90;
 }
 .tab {
@@ -62,8 +58,7 @@ body {
 }
 .tab.active { color: var(--accent); border-bottom-color: var(--accent); background: white; }
 .month-scroll {
-  overflow-x: auto; padding: 14px 16px 0;
-  display: flex; gap: 7px; scrollbar-width: none;
+  overflow-x: auto; padding: 14px 16px 0; display: flex; gap: 7px; scrollbar-width: none;
 }
 .month-scroll::-webkit-scrollbar { display: none; }
 .month-chip {
@@ -96,17 +91,25 @@ main { padding: 14px 16px calc(32px + var(--safe-bottom)); max-width: 600px; mar
 }
 .list-row:last-child { border-bottom: none; }
 .list-row-value { font-family: 'DM Mono', monospace; font-size: 13px; }
-.edit-btn {
+
+/* ── ボタン群 ── */
+.btn-primary {
   width: 100%; padding: 13px; background: #1A1A1A; color: #F7F4EF;
   border: none; border-radius: 8px; font-size: 14px; font-family: inherit;
   letter-spacing: 2px; cursor: pointer; margin-top: 18px;
 }
-.edit-btn:active { background: #333; }
-.settings-btn {
-  width: 100%; padding: 11px; background: none; color: var(--muted);
+.btn-primary:active { background: #333; }
+.btn-row { display: flex; gap: 10px; margin-top: 10px; }
+.btn-secondary {
+  flex: 1; padding: 11px 8px; background: none; color: var(--muted);
   border: 1px solid var(--border); border-radius: 8px; font-size: 13px;
-  font-family: inherit; letter-spacing: 1px; cursor: pointer; margin-top: 10px;
+  font-family: inherit; letter-spacing: 1px; cursor: pointer; text-align: center;
 }
+.btn-secondary:active { background: #EEEAE3; }
+.btn-secondary.export { color: var(--blue); border-color: var(--blue); }
+.btn-secondary.import { color: var(--green); border-color: var(--green); }
+
+/* ── Modal ── */
 .modal-overlay {
   position: fixed; inset: 0; background: rgba(0,0,0,.5); z-index: 200;
   display: flex; align-items: flex-end; justify-content: center;
@@ -157,6 +160,24 @@ main { padding: 14px 16px calc(32px + var(--safe-bottom)); max-width: 600px; mar
   font-size: 10px; letter-spacing: 3px; color: var(--muted);
   padding: 12px 18px 4px; text-transform: uppercase;
 }
+
+/* ── Toast ── */
+.toast {
+  position: fixed; bottom: calc(24px + var(--safe-bottom)); left: 50%; transform: translateX(-50%) translateY(20px);
+  background: #1A1A1A; color: white; padding: 10px 20px; border-radius: 20px;
+  font-size: 13px; letter-spacing: 1px; opacity: 0; transition: all .3s; z-index: 500;
+  white-space: nowrap;
+}
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+/* ── Backup note ── */
+.backup-note {
+  background: #FFF8F0; border: 1px solid #F0D8B8; border-radius: 8px;
+  padding: 12px 15px; font-size: 12px; color: var(--accent); line-height: 1.7;
+  margin-top: 10px;
+}
+
+/* ── Year view ── */
 .year-chart-wrap { background: white; border: 1px solid var(--border); border-radius: 8px; padding: 16px; }
 .year-chart { display: flex; gap: 3px; align-items: flex-end; height: 100px; margin-bottom: 10px; }
 .year-col { flex: 1; display: flex; flex-direction: column; align-items: center; }
@@ -169,8 +190,7 @@ main { padding: 14px 16px calc(32px + var(--safe-bottom)); max-width: 600px; mar
 .year-table { background: white; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; margin-top: 14px; }
 .year-table-header {
   display: grid; grid-template-columns: 38px 1fr 1fr 1fr;
-  padding: 8px 12px; background: #EEEAE3;
-  font-size: 10px; letter-spacing: 1px; color: var(--muted);
+  padding: 8px 12px; background: #EEEAE3; font-size: 10px; letter-spacing: 1px; color: var(--muted);
 }
 .year-table-header span:not(:first-child) { text-align: right; }
 .year-table-row {
@@ -182,6 +202,14 @@ main { padding: 14px 16px calc(32px + var(--safe-bottom)); max-width: 600px; mar
 .empty-state { text-align: center; padding: 36px 20px; color: var(--muted); font-size: 14px; line-height: 1.8; }
 .settings-section { padding: 14px 18px; }
 .settings-section h3 { font-size: 12px; letter-spacing: 2px; color: var(--muted); margin-bottom: 10px; }
+
+/* import drop zone */
+.drop-zone {
+  border: 2px dashed var(--border); border-radius: 8px; padding: 28px 20px;
+  text-align: center; color: var(--muted); font-size: 13px; line-height: 1.8;
+  cursor: pointer; transition: border-color .2s; background: white;
+}
+.drop-zone:hover, .drop-zone.drag-over { border-color: var(--accent); color: var(--accent); }
 </style>
 </head>
 <body>
@@ -219,22 +247,10 @@ main { padding: 14px 16px calc(32px + var(--safe-bottom)); max-width: 600px; mar
       </div>
     </div>
     <div class="preview-strip">
-      <div class="preview-item">
-        <div class="preview-item-label">収入計</div>
-        <div class="preview-item-value green" id="pvIncome">—</div>
-      </div>
-      <div class="preview-item">
-        <div class="preview-item-label">支出計</div>
-        <div class="preview-item-value red" id="pvExpense">—</div>
-      </div>
-      <div class="preview-item">
-        <div class="preview-item-label">収支</div>
-        <div class="preview-item-value" id="pvBalance">—</div>
-      </div>
-      <div class="preview-item">
-        <div class="preview-item-label">積立</div>
-        <div class="preview-item-value blue" id="pvSavings">—</div>
-      </div>
+      <div class="preview-item"><div class="preview-item-label">収入計</div><div class="preview-item-value green" id="pvIncome">—</div></div>
+      <div class="preview-item"><div class="preview-item-label">支出計</div><div class="preview-item-value red" id="pvExpense">—</div></div>
+      <div class="preview-item"><div class="preview-item-label">収支</div><div class="preview-item-value" id="pvBalance">—</div></div>
+      <div class="preview-item"><div class="preview-item-label">積立</div><div class="preview-item-value blue" id="pvSavings">—</div></div>
     </div>
     <div id="editForm"></div>
   </div>
@@ -254,6 +270,34 @@ main { padding: 14px 16px calc(32px + var(--safe-bottom)); max-width: 600px; mar
   </div>
 </div>
 
+<!-- Import Modal -->
+<div class="modal-overlay" id="importOverlay" onclick="handleOverlay(event,'importOverlay')">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">データを読み込む</div>
+      <div class="modal-actions">
+        <button class="btn-cancel" onclick="closeModal('importOverlay')">閉じる</button>
+      </div>
+    </div>
+    <div class="form-section">
+      <p style="font-size:13px;color:var(--muted);line-height:1.7;margin-bottom:16px">
+        バックアップしたJSONファイルを選択するか、エリアにドロップしてください。<br>
+        <span style="color:var(--red)">⚠ 現在のデータは上書きされます。</span>
+      </p>
+      <div class="drop-zone" id="dropZone"
+        onclick="document.getElementById('fileInput').click()"
+        ondragover="onDragOver(event)" ondragleave="onDragLeave(event)" ondrop="onDrop(event)">
+        📂 タップしてファイルを選択<br>
+        <small>またはここにドロップ</small>
+      </div>
+      <input type="file" id="fileInput" accept=".json" style="display:none" onchange="onFileSelect(event)">
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
 <script>
 const MONTHS = ['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'];
 const STORAGE_KEY = 'kakei-v3';
@@ -265,29 +309,83 @@ let currentTab   = 'month';
 let draft        = null;
 let settingsDraft = null;
 
-function defaultConfig() { return { cards: ['カード1', 'カード2'] }; }
-
+/* ── Storage ── */
 function loadAll()  { try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}'); } catch { return {}; } }
 function saveAll(d) { localStorage.setItem(STORAGE_KEY, JSON.stringify(d)); }
-function getConfig() { return loadAll().config || defaultConfig(); }
+function getConfig() { return loadAll().config || { cards: ['カード1', 'カード2'] }; }
 function getMonth(y, m) {
   return loadAll()[`${y}-${String(m+1).padStart(2,'0')}`] || defaultMonthData();
 }
 function defaultMonthData() {
-  return {
-    income:  { salary:0, bonus:0, side:0, other:0 },
-    expense: { cash:0, cards:[0,0] },
-    savings: { amount:0 },
-    balance: { amount:'' }
-  };
+  return { income:{salary:0,bonus:0,side:0,other:0}, expense:{cash:0,cards:[0,0]}, savings:{amount:0}, balance:{amount:''} };
 }
 
+/* ── Helpers ── */
 const fmt = n => n ? '¥' + Number(n).toLocaleString() : '—';
 const num = v => Number(v) || 0;
-const totalIncome  = d => num(d.income.salary) + num(d.income.bonus) + num(d.income.side) + num(d.income.other);
-const totalExpense = d => num(d.expense.cash) + (d.expense.cards||[]).reduce((s,v)=>s+num(v),0);
+const totalIncome  = d => num(d.income.salary)+num(d.income.bonus)+num(d.income.side)+num(d.income.other);
+const totalExpense = d => num(d.expense.cash)+(d.expense.cards||[]).reduce((s,v)=>s+num(v),0);
 const totalSavings = d => num(d.savings.amount);
 
+/* ── Toast ── */
+let toastTimer;
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+/* ── Export ── */
+function exportData() {
+  const data = loadAll();
+  const json = JSON.stringify(data, null, 2);
+  const blob = new Blob([json], { type: 'application/json' });
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement('a');
+  const date = new Date().toISOString().slice(0, 10);
+  a.href     = url;
+  a.download = `kakei-backup-${date}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast('📥 バックアップを保存しました');
+}
+
+/* ── Import ── */
+function openImport() {
+  document.getElementById('importOverlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function onDragOver(e)  { e.preventDefault(); document.getElementById('dropZone').classList.add('drag-over'); }
+function onDragLeave(e) { document.getElementById('dropZone').classList.remove('drag-over'); }
+function onDrop(e) {
+  e.preventDefault();
+  document.getElementById('dropZone').classList.remove('drag-over');
+  const file = e.dataTransfer.files[0];
+  if (file) readFile(file);
+}
+function onFileSelect(e) {
+  const file = e.target.files[0];
+  if (file) readFile(file);
+}
+function readFile(file) {
+  const reader = new FileReader();
+  reader.onload = ev => {
+    try {
+      const data = JSON.parse(ev.target.result);
+      saveAll(data);
+      closeModal('importOverlay');
+      render();
+      showToast('✅ データを読み込みました');
+    } catch {
+      showToast('❌ ファイルの形式が正しくありません');
+    }
+  };
+  reader.readAsText(file);
+}
+
+/* ── Init ── */
 function init() {
   document.getElementById('yearLabel').textContent = currentYear;
   renderMonthChips();
@@ -326,12 +424,11 @@ function switchTab(tab, btn) {
 
 function render() { currentTab === 'month' ? renderMonth() : renderYear(); }
 
+/* ── Month view ── */
 function renderMonth() {
   const d   = getMonth(currentYear, currentMonth);
   const cfg = getConfig();
-  const inc = totalIncome(d);
-  const exp = totalExpense(d);
-  const sav = totalSavings(d);
+  const inc = totalIncome(d), exp = totalExpense(d), sav = totalSavings(d);
   const bal = inc - exp - sav;
   const hasData = inc || exp || sav || d.balance.amount;
   const balCol  = bal >= 0 ? 'green' : 'red';
@@ -339,20 +436,16 @@ function renderMonth() {
   let html = `
     <div class="kpi-grid">
       <div class="kpi-card" style="border-top-color:var(--green)">
-        <div class="kpi-label">収入合計</div>
-        <div class="kpi-value green">${fmt(inc)}</div>
+        <div class="kpi-label">収入合計</div><div class="kpi-value green">${fmt(inc)}</div>
       </div>
       <div class="kpi-card" style="border-top-color:var(--red)">
-        <div class="kpi-label">支出合計</div>
-        <div class="kpi-value red">${fmt(exp)}</div>
+        <div class="kpi-label">支出合計</div><div class="kpi-value red">${fmt(exp)}</div>
       </div>
       <div class="kpi-card" style="border-top-color:var(--blue)">
-        <div class="kpi-label">積立貯蓄</div>
-        <div class="kpi-value blue">${fmt(sav)}</div>
+        <div class="kpi-label">積立貯蓄</div><div class="kpi-value blue">${fmt(sav)}</div>
       </div>
       <div class="kpi-card" style="border-top-color:var(--${balCol})">
-        <div class="kpi-label">収支差引</div>
-        <div class="kpi-value ${balCol}">${hasData ? fmt(bal) : '—'}</div>
+        <div class="kpi-label">収支差引</div><div class="kpi-value ${balCol}">${hasData ? fmt(bal) : '—'}</div>
       </div>
     </div>`;
 
@@ -381,11 +474,21 @@ function renderMonth() {
     html += `<div class="empty-state">まだデータがありません<br><small>下のボタンから入力できます</small></div>`;
   }
 
-  html += `<button class="edit-btn" onclick="openEdit()">✎ ${MONTHS[currentMonth]}を入力・編集する</button>`;
-  html += `<button class="settings-btn" onclick="openSettings()">⚙ カード名などの設定</button>`;
+  html += `<button class="btn-primary" onclick="openEdit()">✎ ${MONTHS[currentMonth]}を入力・編集する</button>`;
+  html += `
+    <div class="btn-row">
+      <button class="btn-secondary export" onclick="exportData()">📥 バックアップ</button>
+      <button class="btn-secondary import" onclick="openImport()">📤 復元</button>
+      <button class="btn-secondary" onclick="openSettings()">⚙ 設定</button>
+    </div>
+    <div class="backup-note">
+      💡 データはこの端末のブラウザに保存されています。別の端末や新しいブラウザで使うときは「バックアップ」→「復元」でデータを移してください。
+    </div>`;
+
   document.getElementById('mainContent').innerHTML = html;
 }
 
+/* ── Year view ── */
 function renderYear() {
   const summary = Array.from({length:12}, (_,i) => {
     const d = getMonth(currentYear, i);
@@ -439,26 +542,31 @@ function renderYear() {
           <span style="color:${bal>=0?'var(--green)':'var(--red)'}">${hasd?fmt(bal):'—'}</span>
         </div>`;
       }).join('')}
+    </div>
+    <div class="btn-row" style="margin-top:18px">
+      <button class="btn-secondary export" onclick="exportData()">📥 バックアップ</button>
+      <button class="btn-secondary import" onclick="openImport()">📤 復元</button>
     </div>`;
+
   document.getElementById('mainContent').innerHTML = html;
 }
 
+/* ── Edit Modal ── */
 function openEdit() {
   const d   = getMonth(currentYear, currentMonth);
   const cfg = getConfig();
   draft = JSON.parse(JSON.stringify(d));
   if (!draft.expense.cards) draft.expense.cards = [];
   while (draft.expense.cards.length < cfg.cards.length) draft.expense.cards.push(0);
-
   document.getElementById('editTitle').textContent = `${currentYear}年 ${MONTHS[currentMonth]}`;
-  renderEditForm(cfg);
+  document.getElementById('editForm').innerHTML = buildEditForm(cfg);
   updatePreview();
   document.getElementById('editOverlay').classList.add('open');
   document.body.style.overflow = 'hidden';
 }
 
-function renderEditForm(cfg) {
-  document.getElementById('editForm').innerHTML = `
+function buildEditForm(cfg) {
+  return `
     <div class="form-subtitle">収入</div>
     <div class="form-section">
       <div class="form-group">
@@ -521,8 +629,8 @@ function updatePreview() {
   document.getElementById('pvExpense').textContent = fmt(exp);
   document.getElementById('pvSavings').textContent = fmt(sav);
   const pb = document.getElementById('pvBalance');
-  pb.textContent  = fmt(bal);
-  pb.style.color  = bal >= 0 ? 'var(--green)' : 'var(--red)';
+  pb.textContent = fmt(bal);
+  pb.style.color = bal >= 0 ? 'var(--green)' : 'var(--red)';
 }
 
 function saveEdit() {
@@ -531,8 +639,10 @@ function saveEdit() {
   saveAll(all);
   closeModal('editOverlay');
   render();
+  showToast('✅ 保存しました');
 }
 
+/* ── Settings Modal ── */
 function openSettings() {
   settingsDraft = JSON.parse(JSON.stringify(getConfig()));
   document.getElementById('settingsForm').innerHTML = `
@@ -555,8 +665,10 @@ function saveSettings() {
   saveAll(all);
   closeModal('settingsOverlay');
   render();
+  showToast('✅ 設定を保存しました');
 }
 
+/* ── Modal helpers ── */
 function closeModal(id) {
   document.getElementById(id).classList.remove('open');
   document.body.style.overflow = '';
@@ -565,6 +677,7 @@ function handleOverlay(e, id) {
   if (e.target === document.getElementById(id)) closeModal(id);
 }
 
+/* ── PWA ── */
 if ('serviceWorker' in navigator) {
   const sw = `
     self.addEventListener('install', e => e.waitUntil(
